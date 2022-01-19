@@ -44,39 +44,26 @@ right_x_limit=WIDTH-365
 x_random=np.arange(left_x_limit,right_x_limit,50)    
 
 class PlayerCarAI():
-    def __init__(self, max_vel=10, angle_deg = 18):
+    def __init__(self, max_vel=20, angle_deg = 18):
         # player car attributes
         self.img = RED_CAR
-        self.initial_vel=10
+        self.initial_vel=max_vel
         self.max_vel = max_vel
-        self.vel = 0
+        self.vel = 5
         self.x, self.y = (5*HEIGHT/6, WIDTH-450)
         self.acceleration = 0.07
         self.score=0
         self.game_over=False
         self.direction=[0,0,0]
         self.angle = angle_deg
+        self.inner_rad = int(WIDTH/6)
+        self.outer_rad = int(WIDTH/3)
+        self.mid_rad = int(WIDTH/4)
 
-        center = (self.x + 20 ,self.y + 50)
-        angle = 0
-        radius = int(WIDTH/3)
-        
-        pts = []
-        for i in range(int(360/self.angle)):
-            vec = pygame.math.Vector2(0, -radius).rotate(angle)
-            pt_x, pt_y = center[0] + vec.x, center[1] + vec.y
-
-            if (pt_x > right_x_limit):
-                pt_x = right_x_limit
-            elif(pt_x < left_x_limit):
-                pt_x = left_x_limit
-            
-            pts.append((pt_x,pt_y))
-            angle += self.angle     
-            if angle >= 360:
-                angle = 0
-
-        self.pts=pts
+        # getting starting points for inner and outer circle
+        self.pts1=self.get_pts(self.inner_rad)
+        self.pts3=self.get_pts(self.mid_rad)
+        self.pts2=self.get_pts(self.outer_rad)
 
         # 2 obstacles -> attributes start
         x_random=np.arange(left_x_limit,right_x_limit,50)
@@ -90,9 +77,9 @@ class PlayerCarAI():
         self.x2=x_blocks[1]
         self.y1=-100
         self.y2=-120
-        self.v1=3
-        self.v2=3
-        self.min_velocity=3
+        self.v1=5
+        self.v2=5
+        self.min_velocity=5
         self.acceleration = 0.1
 
         self.image1=GREEN_CAR
@@ -105,6 +92,33 @@ class PlayerCarAI():
 
         # surroundings movement
         self.movement_in_y=0
+
+    def get_pts(self ,rad):
+        center = (self.x + 20 ,self.y + 50)
+        angle = 0
+        radius = rad
+        pts = []
+        for i in range(int(360/self.angle)):
+            vec = pygame.math.Vector2(0, -radius).rotate(angle)
+            pt_x, pt_y = center[0] + vec.x, center[1] + vec.y
+
+            if (pt_x > right_x_limit):
+                pt_x = right_x_limit+40
+            elif(pt_x < left_x_limit):
+                pt_x = left_x_limit
+            
+            pts.append((pt_x,pt_y))
+            angle += self.angle     
+            if angle >= 360:
+                angle = 0
+
+        # for pt_x,pt_y in pts:
+        #     pygame.draw.circle(WIN, (0, 0, 0), center, radius, 2)
+        #     pygame.draw.line(WIN, (0, 0, 255), center, (pt_x, pt_y), 2)
+        #     pygame.draw.line(WIN, (0, 0, 255), center, (center[0], center[1]-radius), 2)
+        #     pygame.display.update()
+
+        return pts
 
     def reset(self):
         self.__init__()
@@ -135,37 +149,10 @@ class PlayerCarAI():
     
     def player_step(self,action):
 
-        # center = self.img.get_rect().center
-        center = (self.x + 20 ,self.y + 50)
-        angle = 0
-        radius = int(WIDTH/3)
-
-        pts = []
-        for i in range(int(360/self.angle)):
-            vec = pygame.math.Vector2(0, -radius).rotate(angle)
-            pt_x, pt_y = center[0] + vec.x, center[1] + vec.y
-
-            if (pt_x > right_x_limit):
-                pt_x = right_x_limit
-            elif(pt_x < left_x_limit):
-                pt_x = left_x_limit
-            
-            pts.append((pt_x,pt_y))
-            angle += self.angle     
-            if angle >= 360:
-                angle = 0
-
-        self.pts = pts
-        
-        #print("*******",len(pts))
-
-        # for pt_x,pt_y in pts:
-        #     pygame.draw.circle(WIN, (0, 0, 0), center, radius, 2)
-        #     pygame.draw.line(WIN, (0, 0, 255), center, (pt_x, pt_y), 2)
-        #     pygame.draw.line(WIN, (0, 0, 255), center, (center[0], center[1]-radius), 2)
-        #     pygame.display.update()
-            
-        # print(pts)
+        # getting points from inner and outer circle
+        self.pts1=self.get_pts(self.inner_rad)
+        self.pts3=self.get_pts(self.mid_rad)
+        self.pts2=self.get_pts(self.outer_rad)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

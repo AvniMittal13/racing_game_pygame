@@ -18,7 +18,7 @@ class Agent:
         self.epsilon = 0 # randomness
         self.gamma = 0.9 # discount rate
         self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-        self.model = Linear_QNet(3+int(360/game.angle), 256, 3)
+        self.model = Linear_QNet(3+(3*int(360/game.angle)), 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
 
@@ -36,7 +36,29 @@ class Agent:
             ]
 
         # now getting all points on circle around agent car
-        for counter,pt in enumerate(game.pts):
+        for counter,pt in enumerate(game.pts1):
+            angle = 30*(counter)
+            if angle<90:
+                state.append(dir_r and game.get_state(*pt))
+            elif angle==0:
+                state.append(dir_u and game.get_state(*pt))
+            elif angle>270:
+                state.append(dir_l and game.get_state(*pt))
+            else:
+                state.append(game.get_state(*pt))
+
+        for counter,pt in enumerate(game.pts2):
+            angle = 30*(counter)
+            if angle<90:
+                state.append(dir_r and game.get_state(*pt))
+            elif angle==0:
+                state.append(dir_u and game.get_state(*pt))
+            elif angle>270:
+                state.append(dir_l and game.get_state(*pt))
+            else:
+                state.append(game.get_state(*pt))
+
+        for counter,pt in enumerate(game.pts3):
             angle = 30*(counter)
             if angle<90:
                 state.append(dir_r and game.get_state(*pt))
