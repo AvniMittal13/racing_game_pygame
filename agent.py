@@ -18,104 +18,110 @@ class Agent:
         self.epsilon = 0 # randomness
         self.gamma = 0.9 # discount rate
         self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-        self.model = Linear_QNet(3+(3*int(360/game.angle)), 256, 3)
+        self.model = Linear_QNet(12, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
 
     def get_state(self, game):
-        dir_l = game.direction == [0,1,0]
-        dir_r = game.direction == [0,0,1]
-        dir_u = game.direction == [1,0,0]
-
-        state = [
-            # Move direction
-
-            dir_l,
-            dir_r,
-            dir_u,
-            ]
-
-        # now getting all points on circle around agent car
-        for counter,pt in enumerate(game.pts1):
-            angle = 30*(counter)
-            if angle<90:
-                state.append(dir_r and game.get_state(*pt))
-            elif angle==0:
-                state.append(dir_u and game.get_state(*pt))
-            elif angle>270:
-                state.append(dir_l and game.get_state(*pt))
-            else:
-                state.append(game.get_state(*pt))
-
-        for counter,pt in enumerate(game.pts2):
-            angle = 30*(counter)
-            if angle<90:
-                state.append(dir_r and game.get_state(*pt))
-            elif angle==0:
-                state.append(dir_u and game.get_state(*pt))
-            elif angle>270:
-                state.append(dir_l and game.get_state(*pt))
-            else:
-                state.append(game.get_state(*pt))
-
-        for counter,pt in enumerate(game.pts3):
-            angle = 30*(counter)
-            if angle<90:
-                state.append(dir_r and game.get_state(*pt))
-            elif angle==0:
-                state.append(dir_u and game.get_state(*pt))
-            elif angle>270:
-                state.append(dir_l and game.get_state(*pt))
-            else:
-                state.append(game.get_state(*pt))
-
-            
-        
-        
-
-
-
-        # point_u = (game.x, game.y-199)
-        # point_l = (game.x-100, game.y)
-        # point_r = (game.x+100, game.y)
-        # point_ul=(game.x-100,game.y-199)
-        # point_ur=(game.x+100,game.y-199)
-        # point_bl=(left_x_limit,game.y)
-        # point_br=(right_x_limit,game.y)
-
-        
-        
         # dir_l = game.direction == [0,1,0]
         # dir_r = game.direction == [0,0,1]
         # dir_u = game.direction == [1,0,0]
 
         # state = [
-        #     # Danger straight
-        #     (dir_u and game.get_state(*point_u)),
-
-        #     # Danger right
-        #     (dir_r and game.get_state(*point_r)),
-
-        #     # Danger left 
-        #     (dir_l and game.get_state(*point_l)),
-
-        #     # Danger upleft
-        #     (dir_l and game.get_state(*point_ul)),
-
-        #     # Danger upright
-        #     (dir_r and game.get_state(*point_ur)),
-
-        #     # Danger border right
-        #     (dir_r and game.get_state(*point_br)),
-
-        #     # Danger border left
-        #     (dir_l and game.get_state(*point_bl)),
-            
         #     # Move direction
+
         #     dir_l,
         #     dir_r,
         #     dir_u,
         #     ]
+
+        # # now getting all points on circle around agent car
+        # for counter,pt in enumerate(game.pts1):
+        #     angle = 30*(counter)
+        #     if angle<90:
+        #         state.append(dir_r and game.get_state(*pt))
+        #     elif angle==0:
+        #         state.append(dir_u and game.get_state(*pt))
+        #     elif angle>270:
+        #         state.append(dir_l and game.get_state(*pt))
+        #     else:
+        #         state.append(game.get_state(*pt))
+
+        # for counter,pt in enumerate(game.pts2):
+        #     angle = 30*(counter)
+        #     if angle<90:
+        #         state.append(dir_r and game.get_state(*pt))
+        #     elif angle==0:
+        #         state.append(dir_u and game.get_state(*pt))
+        #     elif angle>270:
+        #         state.append(dir_l and game.get_state(*pt))
+        #     else:
+        #         state.append(game.get_state(*pt))
+
+        # for counter,pt in enumerate(game.pts3):
+        #     angle = 30*(counter)
+        #     if angle<90:
+        #         state.append(dir_r and game.get_state(*pt))
+        #     elif angle==0:
+        #         state.append(dir_u and game.get_state(*pt))
+        #     elif angle>270:
+        #         state.append(dir_l and game.get_state(*pt))
+        #     else:
+        #         state.append(game.get_state(*pt))
+
+            
+        
+        
+
+
+
+        point_u = (game.x, game.y-199)
+        point_l = (game.x-100, game.y)
+        point_r = (game.x+100, game.y)
+        point_ul=(game.x-100,game.y-199)
+        point_ur=(game.x+100,game.y-199)
+        point_bl=(left_x_limit,game.y)
+        point_br=(right_x_limit,game.y)
+
+        
+        
+        dir_l = game.direction == [0,1,0]
+        dir_r = game.direction == [0,0,1]
+        dir_u = game.direction == [1,0,0]
+
+        state = [
+            # Danger straight
+            (dir_u and game.get_state(*point_u)),
+
+            # Danger right
+            (dir_r and game.get_state(*point_r)),
+
+            # Danger left 
+            (dir_l and game.get_state(*point_l)),
+
+            # Danger upleft
+            (dir_l and game.get_state(*point_ul)),
+
+            # Danger upright
+            (dir_r and game.get_state(*point_ur)),
+
+            # Danger border right
+            (dir_r and game.get_state(*point_br)),
+
+            # Danger border left
+            (dir_l and game.get_state(*point_bl)),
+
+            # Danger border right
+            (dir_u and game.get_state(*point_br)),
+
+            # Danger border left
+            (dir_u and game.get_state(*point_bl)),
+            
+            # Move direction
+            dir_l,
+            dir_r,
+            dir_u,
+            ]
 
         return np.array(state, dtype=int)
 

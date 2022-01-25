@@ -44,7 +44,7 @@ right_x_limit=WIDTH-365
 x_random=np.arange(left_x_limit,right_x_limit,50)    
 
 class PlayerCarAI():
-    def __init__(self, max_vel=20, angle_deg = 18):
+    def __init__(self, max_vel=10, angle_deg = 18):
         # player car attributes
         self.img = RED_CAR
         self.initial_vel=max_vel
@@ -61,9 +61,9 @@ class PlayerCarAI():
         self.mid_rad = int(WIDTH/4)
 
         # getting starting points for inner and outer circle
-        self.pts1=self.get_pts(self.inner_rad)
-        self.pts3=self.get_pts(self.mid_rad)
-        self.pts2=self.get_pts(self.outer_rad)
+        # self.pts1=self.get_pts(self.inner_rad)
+        # self.pts3=self.get_pts(self.mid_rad)
+        # self.pts2=self.get_pts(self.outer_rad)
 
         # 2 obstacles -> attributes start
         x_random=np.arange(left_x_limit,right_x_limit,50)
@@ -77,9 +77,9 @@ class PlayerCarAI():
         self.x2=x_blocks[1]
         self.y1=-100
         self.y2=-120
-        self.v1=5
-        self.v2=5
-        self.min_velocity=5
+        self.v1=3
+        self.v2=3
+        self.min_velocity=3
         self.acceleration = 0.1
 
         self.image1=GREEN_CAR
@@ -150,9 +150,9 @@ class PlayerCarAI():
     def player_step(self,action):
 
         # getting points from inner and outer circle
-        self.pts1=self.get_pts(self.inner_rad)
-        self.pts3=self.get_pts(self.mid_rad)
-        self.pts2=self.get_pts(self.outer_rad)
+        # self.pts1=self.get_pts(self.inner_rad)
+        # self.pts3=self.get_pts(self.mid_rad)
+        # self.pts2=self.get_pts(self.outer_rad)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
